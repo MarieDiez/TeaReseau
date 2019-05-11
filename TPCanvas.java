@@ -9,7 +9,7 @@ import java.awt.Graphics;
  */
 public class TPCanvas extends Canvas {
 
-	int size = 1000;
+	int size = 650;
 	int nbPosition = 10;
 	byte[] etat;
 

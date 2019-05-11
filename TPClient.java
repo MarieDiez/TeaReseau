@@ -33,6 +33,8 @@ public class TPClient extends Frame {
 	TPPanel tpPanel;
 	TPCanvas tpCanvas;
 	Timer timer;
+	static final int LONGUEUR = 650;
+	static final int HAUTEUR = 710;
 
 	/** Constructeur */
 	public TPClient(int number, int team, int x, int y) {
@@ -41,6 +43,7 @@ public class TPClient extends Frame {
 		add("North", tpPanel);
 		tpCanvas = new TPCanvas(this.etat);
 		add("Center", tpCanvas);
+		
 
 		timer = new Timer();
 		timer.schedule(new MyTimerTask(), 500, 500);
@@ -110,8 +113,13 @@ public class TPClient extends Frame {
 		}
 		try {
 			
-			TPClient tPClient = new TPClient(Integer.parseInt(args[0]), Integer.parseInt(args[1]),Integer.parseInt(args[2]),Integer.parseInt(args[3]));
-			tPClient.minit(Integer.parseInt(args[0]), Integer.parseInt(args[1]),Integer.parseInt(args[2]),Integer.parseInt(args[3]));
+			int numero = Integer.parseInt(args[0]);
+			int team = Integer.parseInt(args[1]);
+			int posX = Integer.parseInt(args[2]);
+			int posY = Integer.parseInt(args[3]);
+			
+			TPClient tPClient = new TPClient(numero,team,posX,posY);
+			tPClient.minit(numero,team,posX,posY);
 
 			// Pour fermeture
 			tPClient.addWindowListener(new WindowAdapter() {
@@ -123,7 +131,7 @@ public class TPClient extends Frame {
 			// Create Panel back forward
 
 			tPClient.pack();
-			tPClient.setSize(1000, 1000 + 200);
+			tPClient.setSize(LONGUEUR, HAUTEUR);
 			tPClient.setVisible(true);
 
 		} catch (Exception e) {
