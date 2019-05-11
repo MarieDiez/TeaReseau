@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.BufferedReader;
@@ -29,7 +30,8 @@ public class TPClient extends Frame {
 	int port = 2000;
 	Socket socket = null;
 	InputStream in;
-	DataOutputStream out;
+	//DataOutputStream out;
+	OutputStream out;
 	TPPanel tpPanel;
 	TPCanvas tpCanvas;
 	Timer timer;
@@ -48,7 +50,7 @@ public class TPClient extends Frame {
 		try {
 			this.socket = new Socket("localhost",this.port);
 			this.in = this.socket.getInputStream();
-			this.out = (DataOutputStream) this.socket.getOutputStream();
+			this.out = this.socket.getOutputStream();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
