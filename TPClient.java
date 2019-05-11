@@ -106,6 +106,11 @@ public class TPClient extends Frame {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		args = new String[4];
+		args[0] = "1";
+		args[1] = "2";
+		args[2] = "3";
+		args[3] = "4";
 		System.out.println("args :" + args[0]);
 		if (args.length != 4) {
 			System.out.println("Usage : java TPClient number color positionX positionY ");
