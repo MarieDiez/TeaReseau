@@ -33,7 +33,7 @@ public class TPClient extends Frame {
 	TPPanel tpPanel;
 	TPCanvas tpCanvas;
 	Timer timer;
-	static final int LONGUEUR = 650;
+	static final int LONGUEUR = 650; //
 	static final int HAUTEUR = 710;
 
 	/** Constructeur */
@@ -43,23 +43,42 @@ public class TPClient extends Frame {
 		add("North", tpPanel);
 		tpCanvas = new TPCanvas(this.etat);
 		add("Center", tpCanvas);
+		// - - - - 
 		
-
+		try {
+			this.socket = new Socket("localhost",this.port);
+			this.in = this.socket.getInputStream();
+			this.out = (DataOutputStream) this.socket.getOutputStream();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		// - - - - 
 		timer = new Timer();
 		timer.schedule(new MyTimerTask(), 500, 500);
-
 	}
 
 	/** Action vers droit */
 	public synchronized void droit() {
-		System.out.println("Droit");
+		try {
+			this.out.write("Droit".getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("envoie 'Droit' au serveur");
 		tpCanvas.repaint();
 
 	}
 
 	/** Action vers gauche */
 	public synchronized void gauche() {
-		System.out.println("Gauche");
+		try {
+			this.out.write("Gauche".getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("envoie 'Gauche' au serveur");
 
 		tpCanvas.repaint();
 
@@ -67,7 +86,12 @@ public class TPClient extends Frame {
 
 	/** Action vers gauche */
 	public synchronized void haut() {
-		System.out.println("Haut");
+		try {
+			this.out.write("Haut".getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("envoie 'Haut' au serveur");
 
 		tpCanvas.repaint();
 
@@ -75,7 +99,12 @@ public class TPClient extends Frame {
 
 	/** Action vers bas */
 	public synchronized void bas() {
-		System.out.println("Bas");
+		try {
+			this.out.write("Bas".getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("envoie 'Bas' au serveur");
 
 		tpCanvas.repaint();
 
@@ -148,8 +177,8 @@ public class TPClient extends Frame {
 	class MyTimerTask extends TimerTask {
 
 		public void run() {
-			System.out.println("refresh");
-			refresh();
+			//System.out.println("refresh");
+			//refresh();
 		}
 	}
 

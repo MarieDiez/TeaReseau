@@ -25,7 +25,7 @@ public class TPCanvas extends Canvas {
 	}
 
 	public void paint(Graphics win) {
-		System.out.println("Paint");
+		System.out.println("TPCanvas : Paint");
 		paintCarte(win);
 		drawEtat(win);
 	}
