@@ -30,8 +30,8 @@ public class TPClient extends Frame {
 	int port = 2000;
 	Socket socket = null;
 	InputStream in;
-	//DataOutputStream out;
-	OutputStream out;
+	DataOutputStream out;
+	//OutputStream out;
 	TPPanel tpPanel;
 	TPCanvas tpCanvas;
 	Timer timer;
@@ -40,7 +40,7 @@ public class TPClient extends Frame {
 
 	/** Constructeur */
 	// number -> id
-	public TPClient(int number, int team, int x, int y) {
+	public TPClient(int id, int team, int x, int y) {
 		setLayout(new BorderLayout());
 		tpPanel = new TPPanel(this);
 		add("North", tpPanel);
@@ -51,7 +51,11 @@ public class TPClient extends Frame {
 		try {
 			this.socket = new Socket("localhost",this.port);
 			this.in = this.socket.getInputStream();
-			this.out = this.socket.getOutputStream();
+			this.out = new DataOutputStream(this.socket.getOutputStream());
+			
+			byte[] init = {(byte) id,(byte)team,(byte)x,(byte)y};
+			this.out.write(init);			
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -64,7 +68,7 @@ public class TPClient extends Frame {
 
 	/** Action vers droit */
 	public synchronized void droit() {
-		try {
+		try {			
 			this.out.write("Droit\n".getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();

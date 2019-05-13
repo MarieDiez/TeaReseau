@@ -1,3 +1,4 @@
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
@@ -37,23 +38,30 @@ public class TPServeur {
 class ServeurClientThread implements Runnable{
 
 	private Socket client;
-	private InputStream inputClient;
+	private DataInputStream inputClient;
+	private byte id;
+	private byte team;
+	private byte x;
+	private byte y;
+	
 	
 	public ServeurClientThread(Socket client) {
 		this.client = client;
 		try {
-			this.inputClient = this.client.getInputStream();
+			this.inputClient = new DataInputStream(this.client.getInputStream());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
 	public void run() {
+
+		initialisationClient();
 		
 		while (true) {
 			int c;
 			String msg = "";
+			
 			try {
 				while ((c=inputClient.read()) != -1)
 				{
@@ -69,7 +77,25 @@ class ServeurClientThread implements Runnable{
 			
 		}
 	}
-	
-	
+
+	private void initialisationClient() {
+		byte [] reponse = null;
+		byte para;
+		
+		try {
+			int i = 0;
+			while ((para=(byte)inputClient.read()) != -1)
+			{
+				reponse[i] = para;
+				i++;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		this.id = reponse[0];
+		this.team = reponse[1];
+		this.x = reponse[2];
+		this.y = reponse[3];
+	}
 	
 }
