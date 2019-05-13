@@ -39,6 +39,7 @@ public class TPClient extends Frame {
 	static final int HAUTEUR = 710;
 
 	/** Constructeur */
+	// number -> id
 	public TPClient(int number, int team, int x, int y) {
 		setLayout(new BorderLayout());
 		tpPanel = new TPPanel(this);
@@ -64,7 +65,7 @@ public class TPClient extends Frame {
 	/** Action vers droit */
 	public synchronized void droit() {
 		try {
-			this.out.write("Droit".getBytes());
+			this.out.write("Droit\n".getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -76,7 +77,7 @@ public class TPClient extends Frame {
 	/** Action vers gauche */
 	public synchronized void gauche() {
 		try {
-			this.out.write("Gauche".getBytes());
+			this.out.write("Gauche\n".getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -89,7 +90,7 @@ public class TPClient extends Frame {
 	/** Action vers gauche */
 	public synchronized void haut() {
 		try {
-			this.out.write("Haut".getBytes());
+			this.out.write("Haut\n".getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
