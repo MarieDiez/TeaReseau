@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * @author Alain BOUJU
+ * @author Johan Guerrero & Marie Diez
  *
  */
 public class TPPanel extends Panel {

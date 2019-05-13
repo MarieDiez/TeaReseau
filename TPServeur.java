@@ -3,6 +3,10 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * @author Johan Guerrero & Marie Diez
+ *
+ */
 public class TPServeur {
 
 	public static void main(String[] args) {
@@ -45,7 +49,6 @@ class ServeurClientThread implements Runnable{
 		}
 	}
 	
-	@Override
 	public void run() {
 		
 		while (true) {

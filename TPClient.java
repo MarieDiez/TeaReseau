@@ -18,8 +18,8 @@ import java.io.PrintStream;
 import java.io.BufferedReader;
 
 /**
- * @author Alain BOUJU
- *
+ * @author Johan Guerrero & Marie Diez
+ * 
  */
 public class TPClient extends Frame {
 
