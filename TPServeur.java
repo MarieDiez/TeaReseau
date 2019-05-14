@@ -33,6 +33,8 @@ public class TPServeur {
 				Socket socket = server.accept();
 				Thread thr = new Thread(new ServeurClientThread(socket));
 				thr.start();
+				Thread thrEnvoye = new Thread(new ServeurClientThread(socket));
+				thrEnvoye.start();
 
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -82,13 +84,14 @@ class ServeurClientThread implements Runnable {
 
 			try {
 				// écoute du client
-
 				while ((c = inputClient.read()) != -1) {
 					msg += (char) c;
 				}
 
 				// réponse au client
 				this.objOutput.writeObject(TPServeur.joueurs);
+				System.out.println("envoyé");
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.out.println("Le client est clot");

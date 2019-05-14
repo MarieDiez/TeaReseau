@@ -4,6 +4,7 @@ import java.awt.event.WindowAdapter; // Window Event
 import java.awt.event.WindowEvent; // Window Event
 
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
@@ -25,12 +27,10 @@ public class TPClient extends Frame {
 
 	byte[] etat = new byte[2 * 10 * 10];
 	int port = 2000;
-	private byte x;
-	private byte y;
 	Socket socket = null;
 	InputStream in;
 	DataOutputStream out;
-	//OutputStream out;
+	Joueur monJoueur;
 	TPPanel tpPanel;
 	TPCanvas tpCanvas;
 	Timer timer;
@@ -53,7 +53,7 @@ public class TPClient extends Frame {
 			this.out = new DataOutputStream(this.socket.getOutputStream());
 			
 			initialisationClient(id,team,x,y);	
-			
+			Thread threadClient = new Thread(new ThreadClient(socket));
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -70,14 +70,7 @@ public class TPClient extends Frame {
 
 		byte[] init = {id, team, x, y};
 		try {
-			this.out.write(init);
-			
-			// receive 
-			this.x = (byte) this.in.read();
-			this.y = (byte) this.in.read();
-			
-			// affiche pion
-			tpCanvas.repaint();
+			this.out.write(init);			
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -177,7 +170,8 @@ public class TPClient extends Frame {
 			byte team = (byte)Integer.parseInt(args[1]);
 			byte posX = (byte)Integer.parseInt(args[2]);
 			byte posY = (byte)Integer.parseInt(args[3]);
-			
+
+			//OutputStream out;
 			TPClient tPClient = new TPClient(numero,team,posX,posY);
 			tPClient.minit(numero,team,posX,posY);
 
@@ -208,4 +202,39 @@ public class TPClient extends Frame {
 		}
 	}
 
+}
+
+class ThreadClient implements Runnable{
+
+	private ArrayList<Joueur> joueurs;
+	private ObjectInputStream objInput;
+	
+	public ThreadClient(Socket socket) {
+		try {
+			this.objInput = new ObjectInputStream(socket.getInputStream());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void run() {
+		Object o = null;
+		try {
+			o = objInput.readObject();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (o instanceof ArrayList<?>) {
+			System.out.println("coucou");
+		}
+	}
+	
+	
+	
 }
