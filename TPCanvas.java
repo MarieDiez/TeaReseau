@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 
 /**
- * @author Alain BOUJU
+ * @author Johan Guerrero & Marie Diez
  *
  */
 public class TPCanvas extends Canvas {
