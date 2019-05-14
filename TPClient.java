@@ -8,16 +8,10 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.DataInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.io.BufferedReader;
+import java.io.ObjectOutputStream;
 
 /**
  * @author Johan Guerrero & Marie Diez
@@ -29,8 +23,8 @@ public class TPClient extends Frame {
 	int port = 2000;
 	Socket socket = null;
 	InputStream in;
-	DataOutputStream out;
-	Joueur monJoueur;
+	// Joueur monJoueur;
+	static Joueur joueur;
 	TPPanel tpPanel;
 	TPCanvas tpCanvas;
 	Timer timer;
@@ -45,46 +39,24 @@ public class TPClient extends Frame {
 		add("North", tpPanel);
 		tpCanvas = new TPCanvas(this.etat);
 		add("Center", tpCanvas);
-		// - - - - 
-		
+		// - - - -
+		TPClient.joueur = new Joueur(id, x, y, Team.getTeamById(team));
 		try {
-			this.socket = new Socket("localhost",this.port);
-			this.in = this.socket.getInputStream();
-			this.out = new DataOutputStream(this.socket.getOutputStream());
-			
-			initialisationClient(id,team,x,y);	
+			this.socket = new Socket("localhost", this.port);
 			Thread threadClient = new Thread(new ThreadClient(socket));
-			
+			threadClient.start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
-		// - - - - 
+
+		// - - - -
 		timer = new Timer();
 		timer.schedule(new MyTimerTask(), 500, 500);
 	}
 
-	private void initialisationClient(byte id, byte team, byte x, byte y) {
-		
-
-		byte[] init = {id, team, x, y};
-		try {
-			this.out.write(init);			
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
-		
-	}
-
 	/** Action vers droit */
 	public synchronized void droit() {
-		try {			
-			this.out.write("Droit\n".getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		TPClient.joueur.setPosX(TPClient.joueur.getPosX() + 1);
 		System.out.println("envoie 'Droit' au serveur");
 		tpCanvas.repaint();
 
@@ -92,24 +64,17 @@ public class TPClient extends Frame {
 
 	/** Action vers gauche */
 	public synchronized void gauche() {
-		try {
-			this.out.write("Gauche\n".getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// TODO
+		TPClient.joueur.setPosX(TPClient.joueur.getPosX() + 1);
 		System.out.println("envoie 'Gauche' au serveur");
-
 		tpCanvas.repaint();
 
 	}
 
 	/** Action vers gauche */
 	public synchronized void haut() {
-		try {
-			this.out.write("Haut\n".getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// TODO
+		TPClient.joueur.setPosX(TPClient.joueur.getPosX() + 1);
 		System.out.println("envoie 'Haut' au serveur");
 
 		tpCanvas.repaint();
@@ -118,11 +83,8 @@ public class TPClient extends Frame {
 
 	/** Action vers bas */
 	public synchronized void bas() {
-		try {
-			this.out.write("Bas".getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// TODO
+		TPClient.joueur.setPosX(TPClient.joueur.getPosX() + 1);
 		System.out.println("envoie 'Bas' au serveur");
 
 		tpCanvas.repaint();
@@ -159,21 +121,20 @@ public class TPClient extends Frame {
 		args[1] = "2";
 		args[2] = "3";
 		args[3] = "4";
-		System.out.println("args :" + args[0]);
 		if (args.length != 4) {
 			System.out.println("Usage : java TPClient number color positionX positionY ");
 			System.exit(0);
 		}
 		try {
-			
-			byte numero = (byte)Integer.parseInt(args[0]);
-			byte team = (byte)Integer.parseInt(args[1]);
-			byte posX = (byte)Integer.parseInt(args[2]);
-			byte posY = (byte)Integer.parseInt(args[3]);
 
-			//OutputStream out;
-			TPClient tPClient = new TPClient(numero,team,posX,posY);
-			tPClient.minit(numero,team,posX,posY);
+			byte numero = (byte) Integer.parseInt(args[0]);
+			byte team = (byte) Integer.parseInt(args[1]);
+			byte posX = (byte) Integer.parseInt(args[2]);
+			byte posY = (byte) Integer.parseInt(args[3]);
+
+			// OutputStream out;
+			TPClient tPClient = new TPClient(numero, team, posX, posY);
+			tPClient.minit(numero, team, posX, posY);
 
 			// Pour fermeture
 			tPClient.addWindowListener(new WindowAdapter() {
@@ -197,44 +158,47 @@ public class TPClient extends Frame {
 	class MyTimerTask extends TimerTask {
 
 		public void run() {
-			//System.out.println("refresh");
-			//refresh();
+			// System.out.println("refresh");
+			// refresh();
 		}
 	}
 
 }
 
-class ThreadClient implements Runnable{
+class ThreadClient implements Runnable {
 
 	private ArrayList<Joueur> joueurs;
+
 	private ObjectInputStream objInput;
-	
+	private ObjectOutputStream objOutput;
+
 	public ThreadClient(Socket socket) {
 		try {
+			this.objOutput = new ObjectOutputStream(socket.getOutputStream());
 			this.objInput = new ObjectInputStream(socket.getInputStream());
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void run() {
 		Object o = null;
-		try {
-			o = objInput.readObject();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		if (o instanceof ArrayList<?>) {
-			System.out.println("coucou");
+		while (true) {
+			try {
+				this.objOutput.writeObject(TPClient.joueur);
+				o = objInput.readObject();
+				if (o instanceof ArrayList<?>) {
+					//TODO
+					//if (((ArrayList<?>) o).get(0) instanceof Joueur) {
+					//	System.out.println("pouet le joueur");
+					//}
+				}
+			} catch (ClassNotFoundException | IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
-	
-	
-	
+
 }
