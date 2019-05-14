@@ -10,10 +10,10 @@ public class Joueur {
 	private Team team;
 	private boolean vivant;
 	
-	public Joueur(byte posX, byte posY) {
-		super();
+	public Joueur(byte posX, byte posY, Team team) {
 		this.posX = posX;
 		this.posY = posY;
+		this.team = team;
 		this.vivant = true;
 	}
 

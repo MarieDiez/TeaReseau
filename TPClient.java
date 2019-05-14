@@ -214,7 +214,7 @@ public class TPClient extends Frame {
 
 }
 
-class ThreadClient {
+class ThreadClient implements Runnable {
 	
 	private ArrayList<Joueur> joueurs;
 	private ObjectInputStream objInput;
@@ -233,7 +233,7 @@ class ThreadClient {
 			try {
 				Object o = this.objInput.readObject();
 				if (o instanceof Joueur) {
-					this.joueurs.add((Joueur) this.objInput.readObject());	
+					this.joueurs.add((Joueur) this.objInput.readObject());
 				}
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();

@@ -60,7 +60,7 @@ class ServeurClientThread implements Runnable{
 	private OutputStream outputClient;
 	private ObjectOutputStream objOutput;
 	private byte id;
-	private byte team;
+	private Team team;
 	private byte x;
 	private byte y;
 	
@@ -114,13 +114,13 @@ class ServeurClientThread implements Runnable{
 			e.printStackTrace();
 		}
 		this.id = reponse[0];
-		this.team = reponse[1];
+		this.team = Team.getTeamById(reponse[1]);
 		this.x = reponse[2];
 		this.y = reponse[3];
 		
 		//TODO verification dispo case : accepte par def
 		TPServeur.grille[this.x][this.y] = true;
-		TPServeur.joueurs.add(new Joueur(this.x,this.y,this.team,true));
+		TPServeur.joueurs.add(new Joueur(this.x,this.y,this.team));
 		
 		try {
 			this.outputClient.write(this.x);
