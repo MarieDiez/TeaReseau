@@ -1,9 +1,11 @@
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * @author Johan Guerrero & Marie Diez
@@ -12,6 +14,7 @@ import java.net.Socket;
 public class TPServeur {
 
 	public static boolean[][] grille = new boolean[10][10];
+	public static ArrayList<Joueur> joueurs = new ArrayList<Joueur>();
 	
 	public static void main(String[] args) {		
 		
@@ -55,6 +58,7 @@ class ServeurClientThread implements Runnable{
 	private Socket client;
 	private DataInputStream inputClient;
 	private OutputStream outputClient;
+	private ObjectOutputStream objOutput;
 	private byte id;
 	private byte team;
 	private byte x;
@@ -65,6 +69,8 @@ class ServeurClientThread implements Runnable{
 		try {
 			this.inputClient = new DataInputStream(this.client.getInputStream());
 			this.outputClient = this.client.getOutputStream();
+			this.objOutput= new ObjectOutputStream(this.client.getOutputStream());
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -114,9 +120,15 @@ class ServeurClientThread implements Runnable{
 		
 		//TODO verification dispo case : accepte par def
 		TPServeur.grille[this.x][this.y] = true;
+		TPServeur.joueurs.add(new Joueur(this.x,this.y,this.team,true));
+		
 		try {
 			this.outputClient.write(this.x);
 			this.outputClient.write(this.y);
+			
+			this.objOutput.writeObject(TPServeur.joueurs);
+			
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
