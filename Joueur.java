@@ -1,16 +1,19 @@
+import java.io.Serializable;
 
 /**
  * @author Johan Guerrero & Marie Diez
  *
  */
-public class Joueur {
-
+public class Joueur implements Serializable{
+	
+	private byte id;
 	private byte posX;
 	private byte posY;
 	private Team team;
 	private boolean vivant;
 	
-	public Joueur(byte posX, byte posY, Team team) {
+	public Joueur(byte id, byte posX, byte posY, Team team) {
+		this.id = id;
 		this.posX = posX;
 		this.posY = posY;
 		this.team = team;

@@ -4,7 +4,6 @@ import java.awt.event.WindowAdapter; // Window Event
 import java.awt.event.WindowEvent; // Window Event
 
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,7 +12,6 @@ import java.io.IOException;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
@@ -36,7 +34,6 @@ public class TPClient extends Frame {
 	TPPanel tpPanel;
 	TPCanvas tpCanvas;
 	Timer timer;
-	
 	static final int LONGUEUR = 650; //
 	static final int HAUTEUR = 710;
 
@@ -57,7 +54,6 @@ public class TPClient extends Frame {
 			
 			initialisationClient(id,team,x,y);	
 			
-			Thread threadClient = new Thread(new ThreadClient(socket));
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -79,6 +75,9 @@ public class TPClient extends Frame {
 			// receive 
 			this.x = (byte) this.in.read();
 			this.y = (byte) this.in.read();
+			
+			// affiche pion
+			tpCanvas.repaint();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -203,44 +202,10 @@ public class TPClient extends Frame {
 	/** Pour rafraichir */
 	class MyTimerTask extends TimerTask {
 
-		
-		
-		
-		
-		public void run() {	
-			
+		public void run() {
+			//System.out.println("refresh");
+			//refresh();
 		}
 	}
 
-}
-
-class ThreadClient implements Runnable {
-	
-	private ArrayList<Joueur> joueurs;
-	private ObjectInputStream objInput;
-	
-	public ThreadClient(Socket socket) {
-		this.joueurs = new ArrayList<Joueur>();
-		try {
-			this.objInput = new ObjectInputStream(socket.getInputStream());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void run() {
-		while (true) {
-			try {
-				Object o = this.objInput.readObject();
-				if (o instanceof Joueur) {
-					this.joueurs.add((Joueur) this.objInput.readObject());
-				}
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}	
-		}
-		
-	}
 }
