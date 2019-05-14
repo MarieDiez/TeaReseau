@@ -26,8 +26,8 @@ public class Joueur implements Serializable{
 	}
 
 
-	public void setPosX(byte posX) {
-		this.posX = posX;
+	public void setPosX(int i) {
+		this.posX = (byte) i;
 	}
 
 
@@ -36,8 +36,8 @@ public class Joueur implements Serializable{
 	}
 
 
-	public void setPosY(byte posY) {
-		this.posY = posY;
+	public void setPosY(int i) {
+		this.posY = (byte) i;
 	}
 
 
@@ -58,4 +58,7 @@ public class Joueur implements Serializable{
 		this.team = team;
 	}
 	
+	public String toString() {
+		return "Joueur N°"+this.id+", équipe "+this.team+" ("+this.posX+","+this.posY+")";
+	}
 }
