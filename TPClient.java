@@ -24,10 +24,9 @@ import java.io.BufferedReader;
 public class TPClient extends Frame {
 
 	byte[] etat = new byte[2 * 10 * 10];
-	int team;
-	int x;
-	int y;
 	int port = 2000;
+	private byte x;
+	private byte y;
 	Socket socket = null;
 	InputStream in;
 	DataOutputStream out;
@@ -40,7 +39,7 @@ public class TPClient extends Frame {
 
 	/** Constructeur */
 	// number -> id
-	public TPClient(int id, int team, int x, int y) {
+	public TPClient(byte id, byte team, byte x, byte y) {
 		setLayout(new BorderLayout());
 		tpPanel = new TPPanel(this);
 		add("North", tpPanel);
@@ -53,8 +52,8 @@ public class TPClient extends Frame {
 			this.in = this.socket.getInputStream();
 			this.out = new DataOutputStream(this.socket.getOutputStream());
 			
-			byte[] init = {(byte) id,(byte)team,(byte)x,(byte)y};
-			this.out.write(init);			
+			initialisationClient(id,team,x,y);	
+			
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -64,6 +63,26 @@ public class TPClient extends Frame {
 		// - - - - 
 		timer = new Timer();
 		timer.schedule(new MyTimerTask(), 500, 500);
+	}
+
+	private void initialisationClient(byte id, byte team, byte x, byte y) {
+		
+
+		byte[] init = {id, team, x, y};
+		try {
+			this.out.write(init);
+			
+			// receive 
+			this.x = (byte) this.in.read();
+			this.y = (byte) this.in.read();
+			
+			// affiche pion
+			tpCanvas.repaint();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
+		
 	}
 
 	/** Action vers droit */
@@ -154,10 +173,10 @@ public class TPClient extends Frame {
 		}
 		try {
 			
-			int numero = Integer.parseInt(args[0]);
-			int team = Integer.parseInt(args[1]);
-			int posX = Integer.parseInt(args[2]);
-			int posY = Integer.parseInt(args[3]);
+			byte numero = (byte)Integer.parseInt(args[0]);
+			byte team = (byte)Integer.parseInt(args[1]);
+			byte posX = (byte)Integer.parseInt(args[2]);
+			byte posY = (byte)Integer.parseInt(args[3]);
 			
 			TPClient tPClient = new TPClient(numero,team,posX,posY);
 			tPClient.minit(numero,team,posX,posY);

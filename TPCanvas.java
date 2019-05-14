@@ -12,7 +12,8 @@ public class TPCanvas extends Canvas {
 	int size = 650;
 	int nbPosition = 10;
 	byte[] etat;
-
+	
+	
 	Color[] color = { Color.black, Color.blue, Color.red, Color.green, Color.yellow };
 	// 0 black
 	// 1 blue
