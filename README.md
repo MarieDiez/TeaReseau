@@ -20,3 +20,6 @@ Dans 4 autres terminaux :
 ```bash
 java TPClient <id_joueur> <id_équipe> <position_x> <position_y> 
 ```
+
+texte d'explication et de choix technique dans le compte rendu
+
