@@ -93,7 +93,7 @@ class ServeurClientThread implements Runnable {
 				// réponse au client
 				
 				
-				this.objOutput.writeObject(TPServeur.joueurs.size());
+				this.objOutput.writeInt(TPServeur.joueurs.size());
 				for (int i = 0 ; i < TPServeur.joueurs.size() ; i ++) {
 					this.objOutput.writeObject(TPServeur.joueurs.get(i));
 				}

@@ -193,22 +193,23 @@ class ThreadClient implements Runnable {
 		while (true) {
 			try {
 				this.objOutput.writeObject(TPClient.joueur);
-
+				Thread.sleep(10);
 				canvas.joueurs = new ArrayList<Joueur>();
 				int size = objInput.readInt();
+				System.out.println("- - - - - ");
 				for (int i = 0; i < size; i++) {
 					canvas.joueurs.add((Joueur) objInput.readObject());
+					System.out.println(canvas.joueurs.get(i));
 				}
-				// Si o est une liste de joueur
+				canvas.repaint();
+				/*/ Si o est une liste de joueur
 				if (o instanceof ArrayList<?>) {
 					if (((ArrayList<?>) o).size() != 0 && ((ArrayList<?>) o).get(0) instanceof Joueur) {
 						canvas.joueurs = (ArrayList<Joueur>) o;
-
 					}
-				}
-				System.out.println((Joueur) o);
+				}//*/
 
-			} catch (ClassNotFoundException | IOException e) {
+			} catch (ClassNotFoundException | IOException | InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
