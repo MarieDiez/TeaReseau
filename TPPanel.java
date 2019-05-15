@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
  * @author Johan Guerrero & Marie Diez
  *
  */
+@SuppressWarnings("serial")
 public class TPPanel extends Panel {
 	TPClient main=null;
 	Button bDroit, bGauche, bHaut, bBas;

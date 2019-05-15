@@ -1,6 +1,5 @@
 import java.awt.Frame;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.event.WindowAdapter; // Window Event
 import java.awt.event.WindowEvent; // Window Event
 
@@ -10,7 +9,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -18,6 +16,7 @@ import java.io.ObjectOutputStream;
  * @author Johan Guerrero & Marie Diez
  * 
  */
+@SuppressWarnings("serial")
 public class TPClient extends Frame {
 
 	int port = 2000;
@@ -61,7 +60,7 @@ public class TPClient extends Frame {
 		if (TPClient.joueur.isVivant()) {
 			if ((TPClient.joueur.getPosX() + 1) < 10) {
 				TPClient.joueur.setPosX(TPClient.joueur.getPosX() + 1);
-				System.out.println("envoie 'Droit' au serveur");
+				//System.out.println("envoie 'Droit' au serveur");
 				tpCanvas.repaint();
 			}
 		}
@@ -73,7 +72,7 @@ public class TPClient extends Frame {
 		if (TPClient.joueur.isVivant()) {
 			if ((TPClient.joueur.getPosX() - 1) >= 0) {
 				TPClient.joueur.setPosX(TPClient.joueur.getPosX() - 1);
-				System.out.println("envoie 'Gauche' au serveur");
+				//System.out.println("envoie 'Gauche' au serveur");
 				tpCanvas.repaint();
 			}
 		}
@@ -85,8 +84,7 @@ public class TPClient extends Frame {
 		if (TPClient.joueur.isVivant()) {
 			if ((TPClient.joueur.getPosY() - 1) >= 0) {
 				TPClient.joueur.setPosY(TPClient.joueur.getPosY() - 1);
-				System.out.println("envoie 'Haut' au serveur");
-
+				//System.out.println("envoie 'Haut' au serveur");
 				tpCanvas.repaint();
 			}
 		}
@@ -98,10 +96,10 @@ public class TPClient extends Frame {
 		if (TPClient.joueur.isVivant()) {
 			if ((TPClient.joueur.getPosY() + 1) < 10) {
 				TPClient.joueur.setPosY(TPClient.joueur.getPosY() + 1);
-				System.out.println("envoie 'Bas' au serveur");
-
+				//System.out.println("envoie 'Bas' au serveur");
 				tpCanvas.repaint();
 			}
+
 		}
 	}
 
@@ -109,16 +107,6 @@ public class TPClient extends Frame {
 	public synchronized void refresh() {
 
 		tpCanvas.repaint();
-	}
-
-	/** Pour recevoir l'Etat */
-	public void receiveEtat() {
-
-	}
-
-	/** Initialisations */
-	public void minit(int number, int pteam, int px, int py) {
-
 	}
 
 	public String etat() {
@@ -130,13 +118,8 @@ public class TPClient extends Frame {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// args = new String[4];
-		// args[0] = "3";
-		// args[1] = "1";
-		// args[2] = "3";
-		// args[3] = "4";
 		if (args.length != 4) {
-			System.err.println("Usage : java TPClient number color positionX positionY ");
+			System.err.println("Usage : java TPClient identifiant id_equipe posX posY ");
 			System.exit(0);
 		}
 		try {
@@ -148,11 +131,10 @@ public class TPClient extends Frame {
 			posX--;
 			posY--;
 
-			// OutputStream out;
 			TPClient tPClient = new TPClient(numero, team, posX, posY);
-			tPClient.minit(numero, team, posX, posY);
 
 			// Pour fermeture
+			tPClient.setResizable(false);
 			tPClient.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent e) {
 					System.exit(0);
@@ -215,11 +197,8 @@ class ThreadClient implements Runnable {
 		}
 		while (!fini) {
 			try {
-				System.out.println("Client : " + TPClient.joueur);
-
-				Thread.sleep(500);
+				Thread.sleep(120);
 				this.objOutput.writeUnshared(TPClient.joueur);
-				// Thread.sleep(100); //TODO ??
 				canvas.joueurs = new ArrayList<Joueur>();
 				int size = objInput.readInt();
 				for (int i = 0; i < size; i++) {

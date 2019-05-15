@@ -4,6 +4,7 @@ import java.io.Serializable;
  * @author Johan Guerrero & Marie Diez
  *
  */
+@SuppressWarnings("serial")
 public class Joueur implements Serializable {
 
 	private byte id;

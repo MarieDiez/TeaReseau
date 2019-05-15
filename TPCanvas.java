@@ -8,9 +8,10 @@ import java.util.ArrayList;
  * @author Johan Guerrero & Marie Diez
  *
  */
+@SuppressWarnings("serial")
 public class TPCanvas extends Canvas {
 
-	int size = 650;
+	int size = 645;
 	int nbPosition = 10;
 	ArrayList<Joueur> joueurs;
 	
@@ -37,10 +38,6 @@ public class TPCanvas extends Canvas {
 	}
 
 	public void paintCarte(Graphics win) {
-		int h, w;
-		int larg = 10;
-		h = getSize().height;
-		w = getSize().width;
 		win.drawRect(0, 0, size - 1, size - 1); // Draw border
 		for (int i = 1; i < 10; i++) {
 			// Dessin

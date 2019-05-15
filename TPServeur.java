@@ -1,9 +1,6 @@
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -17,6 +14,7 @@ public class TPServeur {
 	public static boolean[][] grille = new boolean[10][10];
 	public static ArrayList<Joueur> joueurs = new ArrayList<Joueur>();
 
+	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 
 		System.out.println("Serveur Lancé");
@@ -43,7 +41,6 @@ public class TPServeur {
 	}
 
 	private static void initGrille() {
-
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 10; j++) {
 				TPServeur.grille[i][j] = false;
@@ -66,8 +63,6 @@ class ServeurClientThread implements Runnable {
 		try {
 			this.objOutput = new ObjectOutputStream(this.client.getOutputStream());
 			this.objInput = new ObjectInputStream(this.client.getInputStream());
-			//
-			// this.joueur = initialisationClient();
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -99,9 +94,9 @@ class ServeurClientThread implements Runnable {
 
 				// écoute du client
 				this.joueur.update((Joueur) this.objInput.readUnshared());
-				// TODO test de positionnement + ajout dans l'array
 				joueurOk(this.joueur, keep_x, keep_y);
 
+				//testes de capture
 				etatVerticle(this.joueur);
 				etatHorizontal(this.joueur);
 
