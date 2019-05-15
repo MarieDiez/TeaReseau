@@ -76,15 +76,33 @@ class ServeurClientThread implements Runnable {
 
 	public void run() {
 		boolean fini = false;
+		Joueur j;
+		
+		try {
+			j = (Joueur) this.objInput.readObject();
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		this.joueur = joueurOkInit(j);
+		TPServeur.joueurs.add(this.joueur);
+		
 		while (!fini) {
 			try {
-				// écoute du client
-				this.joueur = (Joueur) this.objInput.readObject();
-				
-				//TODO test de positionnement + ajout dans l'array
-				
 				// réponse au client
 				this.objOutput.writeObject(TPServeur.joueurs);
+				
+				byte keep_x = this.joueur.getPosX();
+				byte keep_y = this.joueur.getPosY();
+				
+				// écoute du client
+				this.joueur.update((Joueur) this.objInput.readObject());
+				
+				//TODO test de positionnement + ajout dans l'array
+				joueurOk(this.joueur,keep_x,keep_y);
+				
+				
 			} catch (IOException e) {
 				//e.printStackTrace();
 				System.out.println("Le client "+this.joueur.toString()+" est clot");
@@ -100,28 +118,22 @@ class ServeurClientThread implements Runnable {
 		}
 	}
 
-	private Joueur initialisationClient() {
-		byte[] reponse = new byte[4];
-		Joueur joueur = null;
-		try {
-			joueur = (Joueur) this.objInput.readObject();
-			
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+	private void joueurOk(Joueur joueur, byte x , byte y) {
+		
+		if (TPServeur.grille[joueur.getPosX()][joueur.getPosY()]) {
+			joueur.setPosX(x);
+			joueur.setPosY(y);
 		}
-		byte id = reponse[0];
-		Team team = Team.getTeamById(reponse[1]);
-		byte x = reponse[2];
-		byte y = reponse[3];
+	}
 
-		// TODO verification dispo case : accepte par def
-		Joueur ceJoueur = new Joueur(id, x, y, team);
-		TPServeur.grille[x][y] = true;
-		TPServeur.joueurs.add(ceJoueur);
-
-		return ceJoueur;
+	private Joueur joueurOkInit(Joueur joueur) {
+		
+		while (TPServeur.grille[joueur.getPosX()][joueur.getPosY()]) {
+			joueur.setPosX((int)Math.random()*10);
+			joueur.setPosY((int)Math.random()*10);		
+		}
+		
+		return new Joueur(joueur.getId(),joueur.getPosX(),joueur.getPosY(),joueur.getTeam());
 	}
 
 }
