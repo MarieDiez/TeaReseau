@@ -94,22 +94,22 @@ class ServeurClientThread implements Runnable {
 
 		while (!fini) {
 			try {
+				byte keep_x = this.joueur.getPosX();
+				byte keep_y = this.joueur.getPosY();
+				
+				// écoute du client
+				this.joueur.update( (Joueur) this.objInput.readUnshared());
+				// TODO test de positionnement + ajout dans l'array
+				joueurOk(this.joueur, keep_x, keep_y);
+				
 				// réponse au client
 				this.objOutput.writeInt(TPServeur.joueurs.size());
 				for (int i = 0; i < TPServeur.joueurs.size(); i++) {
 					this.objOutput.writeUnshared(TPServeur.joueurs.get(i));
 				}
-				byte keep_x = this.joueur.getPosX();
-				byte keep_y = this.joueur.getPosY();
+			
 
-				// écoute du client
-				//Joueur ju = (Joueur) this.objInput.readObject();
-				Joueur ju = (Joueur) this.objInput.readUnshared();
-				System.out.println(ju);
-				this.joueur.update(ju);
-
-				// TODO test de positionnement + ajout dans l'array
-				joueurOk(this.joueur, keep_x, keep_y);
+				
 
 			} catch (IOException e) {
 				// e.printStackTrace();
@@ -129,9 +129,13 @@ class ServeurClientThread implements Runnable {
 	}
 
 	private void joueurOk(Joueur joueur, byte x, byte y) {
-		if (TPServeur.grille[joueur.getPosX()][joueur.getPosY()]) {
+		if (TPServeur.grille[joueur.getPosX()][joueur.getPosY()] ) {
 			joueur.setPosX(x);
 			joueur.setPosY(y);
+		} 
+		else {
+			TPServeur.grille[x][y] = false;
+			TPServeur.grille[joueur.getPosX()][joueur.getPosY()] = true;
 		}
 	}
 

@@ -58,35 +58,44 @@ public class TPClient extends Frame {
 
 	/** Action vers droit */
 	public synchronized void droit() {
-		TPClient.joueur.setPosX(TPClient.joueur.getPosX() + 1);
-		System.out.println("envoie 'Droit' au serveur");
-		tpCanvas.repaint();
+		if ((TPClient.joueur.getPosX() + 1) < 10) {
+			TPClient.joueur.setPosX(TPClient.joueur.getPosX() + 1);
+			System.out.println("envoie 'Droit' au serveur");
+			tpCanvas.repaint();
+		}
 
 	}
 
 	/** Action vers gauche */
 	public synchronized void gauche() {
-		TPClient.joueur.setPosX(TPClient.joueur.getPosX() - 1);
-		System.out.println("envoie 'Gauche' au serveur");
-		tpCanvas.repaint();
+		if ((TPClient.joueur.getPosX() - 1) >= 0) {
+			TPClient.joueur.setPosX(TPClient.joueur.getPosX() - 1);
+			System.out.println("envoie 'Gauche' au serveur");
+			tpCanvas.repaint();
+		}
 
 	}
 
 	/** Action vers gauche */
 	public synchronized void haut() {
-		TPClient.joueur.setPosY(TPClient.joueur.getPosY() - 1);
-		System.out.println("envoie 'Haut' au serveur");
+		if ((TPClient.joueur.getPosY() - 1) >= 0) {
+			TPClient.joueur.setPosY(TPClient.joueur.getPosY() - 1);
+			System.out.println("envoie 'Haut' au serveur");
 
-		tpCanvas.repaint();
+			tpCanvas.repaint();
+		}
 
 	}
 
 	/** Action vers bas */
 	public synchronized void bas() {
-		TPClient.joueur.setPosY(TPClient.joueur.getPosY() + 1);
-		System.out.println("envoie 'Bas' au serveur");
 
-		tpCanvas.repaint();
+		if ((TPClient.joueur.getPosY() + 1) < 10) {
+			TPClient.joueur.setPosY(TPClient.joueur.getPosY() + 1);
+			System.out.println("envoie 'Bas' au serveur");
+
+			tpCanvas.repaint();
+		}
 
 	}
 
@@ -115,11 +124,11 @@ public class TPClient extends Frame {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//args = new String[4];
-		//args[0] = "3";
-		//args[1] = "1";
-		//args[2] = "3";
-		//args[3] = "4";
+		// args = new String[4];
+		// args[0] = "3";
+		// args[1] = "1";
+		// args[2] = "3";
+		// args[3] = "4";
 		if (args.length != 4) {
 			System.err.println("Usage : java TPClient number color positionX positionY ");
 			System.exit(0);
@@ -186,7 +195,7 @@ class ThreadClient implements Runnable {
 	@Override
 	public void run() {
 		boolean fini = false;
-		//initialisation joueur
+		// initialisation joueur
 		try {
 			this.objOutput.writeUnshared(TPClient.joueur);
 			TPClient.joueur = (Joueur) objInput.readUnshared();
@@ -200,21 +209,19 @@ class ThreadClient implements Runnable {
 		}
 		while (!fini) {
 			try {
-				System.out.println(TPClient.joueur);
+				System.out.println("Client : " + TPClient.joueur);
+
+				Thread.sleep(500);
 				this.objOutput.writeUnshared(TPClient.joueur);
-				Thread.sleep(100); //TODO ??
+				// Thread.sleep(100); //TODO ??
 				canvas.joueurs = new ArrayList<Joueur>();
 				int size = objInput.readInt();
 				for (int i = 0; i < size; i++) {
-					canvas.joueurs.add((Joueur) objInput.readUnshared());
+					Joueur j = (Joueur) objInput.readUnshared();
+					TPClient.joueur.update(j);
+					canvas.joueurs.add(j);
 				}
 				canvas.repaint();
-				/*/ Si o est une liste de joueur
-				if (o instanceof ArrayList<?>) {
-					if (((ArrayList<?>) o).size() != 0 && ((ArrayList<?>) o).get(0) instanceof Joueur) {
-						canvas.joueurs = (ArrayList<Joueur>) o;
-					}
-				}//*/
 
 			} catch (ClassNotFoundException | IOException | InterruptedException e) {
 				e.printStackTrace();
