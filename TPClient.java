@@ -46,7 +46,10 @@ public class TPClient extends Frame {
 			Thread threadClient = new Thread(new ThreadClient(socket));
 			threadClient.start();
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("Pas de Serveur: "+ e.getLocalizedMessage());
+			System.exit(-1);
+			//e.printStackTrace();
+			
 		}
 
 		// - - - -
