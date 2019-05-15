@@ -91,7 +91,12 @@ class ServeurClientThread implements Runnable {
 		while (!fini) {
 			try {
 				// réponse au client
-				this.objOutput.writeObject(TPServeur.joueurs);
+				
+				
+				this.objOutput.writeObject(TPServeur.joueurs.size());
+				for (int i = 0 ; i < TPServeur.joueurs.size() ; i ++) {
+					this.objOutput.writeObject(TPServeur.joueurs.get(i));
+				}
 				
 				byte keep_x = this.joueur.getPosX();
 				byte keep_y = this.joueur.getPosY();

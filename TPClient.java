@@ -193,6 +193,7 @@ class ThreadClient implements Runnable {
 		while (true) {
 			try {
 				this.objOutput.writeObject(TPClient.joueur);
+
 				canvas.joueurs = new ArrayList<Joueur>();
 				int size = objInput.readInt();
 				for (int i = 0; i < size; i++) {
