@@ -66,8 +66,7 @@ public class TPClient extends Frame {
 
 	/** Action vers gauche */
 	public synchronized void gauche() {
-		// TODO
-		TPClient.joueur.setPosX(TPClient.joueur.getPosX() + 1);
+		TPClient.joueur.setPosX(TPClient.joueur.getPosX() - 1);
 		System.out.println("envoie 'Gauche' au serveur");
 		tpCanvas.repaint();
 
@@ -75,8 +74,7 @@ public class TPClient extends Frame {
 
 	/** Action vers gauche */
 	public synchronized void haut() {
-		// TODO
-		TPClient.joueur.setPosX(TPClient.joueur.getPosX() + 1);
+		TPClient.joueur.setPosY(TPClient.joueur.getPosY() - 1);
 		System.out.println("envoie 'Haut' au serveur");
 
 		tpCanvas.repaint();
@@ -85,8 +83,7 @@ public class TPClient extends Frame {
 
 	/** Action vers bas */
 	public synchronized void bas() {
-		// TODO
-		TPClient.joueur.setPosX(TPClient.joueur.getPosX() + 1);
+		TPClient.joueur.setPosY(TPClient.joueur.getPosY() + 1);
 		System.out.println("envoie 'Bas' au serveur");
 
 		tpCanvas.repaint();
@@ -118,13 +115,13 @@ public class TPClient extends Frame {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		args = new String[4];
-		args[0] = "1";
-		args[1] = "1";
-		args[2] = "3";
-		args[3] = "4";
+		//args = new String[4];
+		//args[0] = "3";
+		//args[1] = "1";
+		//args[2] = "3";
+		//args[3] = "4";
 		if (args.length != 4) {
-			System.out.println("Usage : java TPClient number color positionX positionY ");
+			System.err.println("Usage : java TPClient number color positionX positionY ");
 			System.exit(0);
 		}
 		try {
@@ -186,20 +183,29 @@ class ThreadClient implements Runnable {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void run() {
-		Object o = null;
-		while (true) {
+		boolean fini = false;
+		//initialisation joueur
+		try {
+			this.objOutput.writeObject(TPClient.joueur);
+			TPClient.joueur = (Joueur) objInput.readObject();
+		} catch (ClassNotFoundException | IOException e1) {
+			e1.printStackTrace();
+		}
+		if (TPClient.joueur.getId() == -1) {
+			System.err.println("L'identifiant demandé est déjà prit, choisissez en un autre.");
+			fini = true;
+			System.exit(0);
+		}
+		while (!fini) {
 			try {
 				this.objOutput.writeObject(TPClient.joueur);
-				Thread.sleep(10);
+				Thread.sleep(10); //TODO ??
 				canvas.joueurs = new ArrayList<Joueur>();
 				int size = objInput.readInt();
-				System.out.println("- - - - - ");
 				for (int i = 0; i < size; i++) {
 					canvas.joueurs.add((Joueur) objInput.readObject());
-					System.out.println(canvas.joueurs.get(i));
 				}
 				canvas.repaint();
 				/*/ Si o est une liste de joueur

@@ -65,10 +65,10 @@ class ServeurClientThread implements Runnable {
 		this.client = client;
 		try {
 			this.objOutput = new ObjectOutputStream(this.client.getOutputStream());
-			this.objInput = new ObjectInputStream(this.client.getInputStream());	
+			this.objInput = new ObjectInputStream(this.client.getInputStream());
 			//
-			//this.joueur = initialisationClient();
-			
+			// this.joueur = initialisationClient();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -77,40 +77,42 @@ class ServeurClientThread implements Runnable {
 	public void run() {
 		boolean fini = false;
 		Joueur j = null;
-		
+
 		try {
 			j = (Joueur) this.objInput.readObject();
-		} catch (ClassNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
+			this.joueur = joueurOkInit(j);
+			this.objOutput.writeObject(this.joueur);
+		} catch (ClassNotFoundException | IOException e1) {
 			e1.printStackTrace();
 		}
-		this.joueur = joueurOkInit(j);
-		TPServeur.joueurs.add(this.joueur);
-		
+
+		if (this.joueur.getId() == -1) {
+			fini = true;
+		} else {
+			TPServeur.joueurs.add(this.joueur);
+		}
+
 		while (!fini) {
 			try {
 				// réponse au client
-				
-				
 				this.objOutput.writeInt(TPServeur.joueurs.size());
-				for (int i = 0 ; i < TPServeur.joueurs.size() ; i ++) {
+				for (int i = 0; i < TPServeur.joueurs.size(); i++) {
 					this.objOutput.writeObject(TPServeur.joueurs.get(i));
 				}
-				
 				byte keep_x = this.joueur.getPosX();
 				byte keep_y = this.joueur.getPosY();
-				
+
 				// écoute du client
 				this.joueur.update((Joueur) this.objInput.readObject());
-				
-				//TODO test de positionnement + ajout dans l'array
-				joueurOk(this.joueur,keep_x,keep_y);
-				
-				
+
+				// TODO test de positionnement + ajout dans l'array
+				joueurOk(this.joueur, keep_x, keep_y);
+
 			} catch (IOException e) {
-				//e.printStackTrace();
-				System.out.println("Le client "+this.joueur.toString()+" est clot");
+				// e.printStackTrace();
+				System.out.println("Le client " + this.joueur.toString() + " est clot");
+				TPServeur.joueurs.remove(this.joueur);
+				TPServeur.grille[this.joueur.getPosX()][this.joueur.getPosY()] = false;
 				fini = true;
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -123,8 +125,7 @@ class ServeurClientThread implements Runnable {
 		}
 	}
 
-	private void joueurOk(Joueur joueur, byte x , byte y) {
-		
+	private void joueurOk(Joueur joueur, byte x, byte y) {
 		if (TPServeur.grille[joueur.getPosX()][joueur.getPosY()]) {
 			joueur.setPosX(x);
 			joueur.setPosY(y);
@@ -132,13 +133,18 @@ class ServeurClientThread implements Runnable {
 	}
 
 	private Joueur joueurOkInit(Joueur joueur) {
-		
+		for (Joueur j : TPServeur.joueurs) {
+			if (j.getId() == joueur.getId()) {
+				return new Joueur((byte) -1, (byte) -1, (byte) -1, joueur.getTeam());
+			}
+		}
 		while (TPServeur.grille[joueur.getPosX()][joueur.getPosY()]) {
-			joueur.setPosX((int)(Math.random()*10));
-			joueur.setPosY((int)(Math.random()*10));		
+			joueur.setPosX((int) (Math.random() * 10));
+			joueur.setPosY((int) (Math.random() * 10));
 		}
 		TPServeur.grille[joueur.getPosX()][joueur.getPosY()] = true;
-		return new Joueur(joueur.getId(),joueur.getPosX(),joueur.getPosY(),joueur.getTeam());
+		return new Joueur(joueur.getId(), joueur.getPosX(), joueur.getPosY(), joueur.getTeam());
+
 	}
 
 }
