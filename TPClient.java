@@ -23,7 +23,6 @@ public class TPClient extends Frame {
 	int port = 2000;
 	Socket socket = null;
 
-	
 	static Joueur joueur;
 	TPPanel tpPanel;
 	TPCanvas tpCanvas;
@@ -46,10 +45,10 @@ public class TPClient extends Frame {
 			Thread threadClient = new Thread(new ThreadClient(socket, tpCanvas));
 			threadClient.start();
 		} catch (IOException e) {
-			System.err.println("Pas de Serveur: "+ e.getLocalizedMessage());
+			System.err.println("Pas de Serveur: " + e.getLocalizedMessage());
 			System.exit(-1);
-			//e.printStackTrace();
-			
+			// e.printStackTrace();
+
 		}
 
 		// - - - -
@@ -96,7 +95,7 @@ public class TPClient extends Frame {
 
 	/** Pour rafraichir la situation */
 	public synchronized void refresh() {
-		
+
 		tpCanvas.repaint();
 	}
 
@@ -121,7 +120,7 @@ public class TPClient extends Frame {
 	public static void main(String[] args) {
 		args = new String[4];
 		args[0] = "1";
-		args[1] = "2";
+		args[1] = "1";
 		args[2] = "3";
 		args[3] = "4";
 		if (args.length != 4) {
@@ -129,14 +128,14 @@ public class TPClient extends Frame {
 			System.exit(0);
 		}
 		try {
-			
+
 			byte numero = (byte) Integer.parseInt(args[0]);
 			byte team = (byte) Integer.parseInt(args[1]);
 			byte posX = (byte) Integer.parseInt(args[2]);
 			byte posY = (byte) Integer.parseInt(args[3]);
 			posX--;
 			posY--;
-			
+
 			// OutputStream out;
 			TPClient tPClient = new TPClient(numero, team, posX, posY);
 			tPClient.minit(numero, team, posX, posY);
@@ -194,13 +193,20 @@ class ThreadClient implements Runnable {
 		while (true) {
 			try {
 				this.objOutput.writeObject(TPClient.joueur);
-				o = objInput.readObject();
+				canvas.joueurs = new ArrayList<Joueur>();
+				int size = objInput.readInt();
+				for (int i = 0; i < size; i++) {
+					canvas.joueurs.add((Joueur) objInput.readObject());
+				}
 				// Si o est une liste de joueur
 				if (o instanceof ArrayList<?>) {
 					if (((ArrayList<?>) o).size() != 0 && ((ArrayList<?>) o).get(0) instanceof Joueur) {
-						canvas.joueurs = (ArrayList<Joueur>)o;
+						canvas.joueurs = (ArrayList<Joueur>) o;
+
 					}
 				}
+				System.out.println((Joueur) o);
+
 			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();
 			}
