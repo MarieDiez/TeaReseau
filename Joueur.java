@@ -58,6 +58,10 @@ public class Joueur implements Serializable {
 		this.team = team;
 	}
 
+	/**
+	 *  fonction qui met a jour un joueur
+	 * @param joueur
+	 */
 	public void update(Joueur joueur) {
 		if (this.id == joueur.id) {
 			this.posX = joueur.posX;
@@ -65,7 +69,7 @@ public class Joueur implements Serializable {
 			this.team = joueur.team;
 			this.vivant = joueur.vivant;
 		} else {
-			System.err.println("Mauvais joueur, le joueur N°" + this.id + " ne peu être mit à jour.");
+			//System.err.println("Mauvais joueur, le joueur N°" + this.id + " ne peu être mit à jour.");
 		}
 	}
 

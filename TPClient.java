@@ -50,9 +50,6 @@ public class TPClient extends Frame {
 
 		}
 
-		// - - - -
-		timer = new Timer();
-		timer.schedule(new MyTimerTask(), 500, 500);
 	}
 
 	/** Action vers droit */
@@ -103,17 +100,6 @@ public class TPClient extends Frame {
 		}
 	}
 
-	/** Pour rafraichir la situation */
-	public synchronized void refresh() {
-
-		tpCanvas.repaint();
-	}
-
-	public String etat() {
-		String result = new String();
-		return result;
-	}
-
 	/**
 	 * @param args
 	 */
@@ -142,7 +128,6 @@ public class TPClient extends Frame {
 			});
 
 			// Create Panel back forward
-
 			tPClient.pack();
 			tPClient.setSize(LONGUEUR, HAUTEUR);
 			tPClient.setVisible(true);
@@ -152,23 +137,26 @@ public class TPClient extends Frame {
 		}
 	}
 
-	/** Pour rafraichir */
-	class MyTimerTask extends TimerTask {
-
-		public void run() {
-			// System.out.println("refresh");
-			// refresh();
-		}
-	}
+	
 
 }
 
+/**
+ * Un threadClient est créer pour chaque client
+ * @author marie & johan
+ *
+ */
 class ThreadClient implements Runnable {
 
 	private ObjectInputStream objInput;
 	private ObjectOutputStream objOutput;
 	private TPCanvas canvas;
 
+	/**
+	 * 
+	 * @param socket
+	 * @param canvas
+	 */
 	public ThreadClient(Socket socket, TPCanvas canvas) {
 		this.canvas = canvas;
 		try {
@@ -183,7 +171,8 @@ class ThreadClient implements Runnable {
 	@Override
 	public void run() {
 		boolean fini = false;
-		// initialisation joueur
+		
+		// initialisation joueur avec id compatible
 		try {
 			this.objOutput.writeUnshared(TPClient.joueur);
 			TPClient.joueur = (Joueur) objInput.readUnshared();
@@ -195,14 +184,23 @@ class ThreadClient implements Runnable {
 			fini = true;
 			System.exit(0);
 		}
+		
+		// boucle d'envoie du joueur avec reception de la liste de joueurs du serveur
 		while (!fini) {
 			try {
 				Thread.sleep(120);
+				
+				// on envoie le joueur au serveur, qui l'ajoutera a la liste des joueurs
 				this.objOutput.writeUnshared(TPClient.joueur);
+				
+				// reception de la liste de joueurs
 				canvas.joueurs = new ArrayList<Joueur>();
 				int size = objInput.readInt();
 				for (int i = 0; i < size; i++) {
 					Joueur j = (Joueur) objInput.readUnshared();
+					
+					// on actualise les coordonnées du joueur, si celle ci n ont pu être 
+					// réaliser par le serveur.
 					TPClient.joueur.update(j);
 					canvas.joueurs.add(j);
 				}
