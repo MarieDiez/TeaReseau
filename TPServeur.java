@@ -76,7 +76,7 @@ class ServeurClientThread implements Runnable {
 
 	public void run() {
 		boolean fini = false;
-		Joueur j;
+		Joueur j = null;
 		
 		try {
 			j = (Joueur) this.objInput.readObject();
@@ -129,10 +129,10 @@ class ServeurClientThread implements Runnable {
 	private Joueur joueurOkInit(Joueur joueur) {
 		
 		while (TPServeur.grille[joueur.getPosX()][joueur.getPosY()]) {
-			joueur.setPosX((int)Math.random()*10);
-			joueur.setPosY((int)Math.random()*10);		
+			joueur.setPosX((int)(Math.random()*10));
+			joueur.setPosY((int)(Math.random()*10));		
 		}
-		
+		TPServeur.grille[joueur.getPosX()][joueur.getPosY()] = true;
 		return new Joueur(joueur.getId(),joueur.getPosX(),joueur.getPosY(),joueur.getTeam());
 	}
 

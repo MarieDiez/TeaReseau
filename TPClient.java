@@ -1,5 +1,6 @@
 import java.awt.Frame;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.WindowAdapter; // Window Event
 import java.awt.event.WindowEvent; // Window Event
 
@@ -128,12 +129,14 @@ public class TPClient extends Frame {
 			System.exit(0);
 		}
 		try {
-
+			
 			byte numero = (byte) Integer.parseInt(args[0]);
 			byte team = (byte) Integer.parseInt(args[1]);
 			byte posX = (byte) Integer.parseInt(args[2]);
 			byte posY = (byte) Integer.parseInt(args[3]);
-
+			posX--;
+			posY--;
+			
 			// OutputStream out;
 			TPClient tPClient = new TPClient(numero, team, posX, posY);
 			tPClient.minit(numero, team, posX, posY);
@@ -195,8 +198,6 @@ class ThreadClient implements Runnable {
 				// Si o est une liste de joueur
 				if (o instanceof ArrayList<?>) {
 					if (((ArrayList<?>) o).size() != 0 && ((ArrayList<?>) o).get(0) instanceof Joueur) {
-						System.out.println("pouet le joueur");
-						;
 						canvas.joueurs = (ArrayList<Joueur>)o;
 					}
 				}
