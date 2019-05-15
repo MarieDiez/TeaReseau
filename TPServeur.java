@@ -96,20 +96,20 @@ class ServeurClientThread implements Runnable {
 			try {
 				byte keep_x = this.joueur.getPosX();
 				byte keep_y = this.joueur.getPosY();
-				
+
 				// écoute du client
-				this.joueur.update( (Joueur) this.objInput.readUnshared());
+				this.joueur.update((Joueur) this.objInput.readUnshared());
 				// TODO test de positionnement + ajout dans l'array
 				joueurOk(this.joueur, keep_x, keep_y);
-				
+
+				etatVerticle(this.joueur);
+				etatHorizontal(this.joueur);
+
 				// réponse au client
 				this.objOutput.writeInt(TPServeur.joueurs.size());
 				for (int i = 0; i < TPServeur.joueurs.size(); i++) {
 					this.objOutput.writeUnshared(TPServeur.joueurs.get(i));
 				}
-			
-
-				
 
 			} catch (IOException e) {
 				// e.printStackTrace();
@@ -128,12 +128,52 @@ class ServeurClientThread implements Runnable {
 		}
 	}
 
+	private void etatHorizontal(Joueur j) {
+		if (j.getPosX() != 0 && j.getPosX() != 9) {
+
+			if (TPServeur.grille[j.getPosX() - 1][j.getPosY()] && TPServeur.grille[j.getPosX() + 1][j.getPosY()]) {
+
+				Joueur advDroite = advPos((byte) (j.getPosX() + 1), j.getPosY());
+				Joueur advGauche = advPos((byte) (j.getPosX() - 1), j.getPosY());
+
+				if ((advDroite.getTeam() == advGauche.getTeam()) && advDroite.getTeam() != j.getTeam()) {
+					j.setVivant(false);
+					j.setTeam(Team.noir);
+				}
+			}
+		}
+	}
+
+	private void etatVerticle(Joueur j) {
+		if (j.getPosY() != 0 && j.getPosY() != 9) {
+
+			if (TPServeur.grille[j.getPosX()][j.getPosY() + 1] && TPServeur.grille[j.getPosX()][j.getPosY() - 1]) {
+
+				Joueur advSup = advPos(j.getPosX(), (byte) (j.getPosY() + 1));
+				Joueur advInf = advPos(j.getPosX(), (byte) (j.getPosY() - 1));
+
+				if ((advSup.getTeam() == advInf.getTeam()) && advSup.getTeam() != j.getTeam()) {
+					j.setVivant(false);
+					j.setTeam(Team.noir);
+				}
+			}
+		}
+	}
+
+	private Joueur advPos(byte posX, byte posY) {
+		for (int i = 0; i < TPServeur.joueurs.size(); i++) {
+			if (TPServeur.joueurs.get(i).getPosX() == posX && TPServeur.joueurs.get(i).getPosY() == posY) {
+				return TPServeur.joueurs.get(i);
+			}
+		}
+		return null;
+	}
+
 	private void joueurOk(Joueur joueur, byte x, byte y) {
-		if (TPServeur.grille[joueur.getPosX()][joueur.getPosY()] ) {
+		if (TPServeur.grille[joueur.getPosX()][joueur.getPosY()]) {
 			joueur.setPosX(x);
 			joueur.setPosY(y);
-		} 
-		else {
+		} else {
 			TPServeur.grille[x][y] = false;
 			TPServeur.grille[joueur.getPosX()][joueur.getPosY()] = true;
 		}

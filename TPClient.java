@@ -58,45 +58,51 @@ public class TPClient extends Frame {
 
 	/** Action vers droit */
 	public synchronized void droit() {
-		if ((TPClient.joueur.getPosX() + 1) < 10) {
-			TPClient.joueur.setPosX(TPClient.joueur.getPosX() + 1);
-			System.out.println("envoie 'Droit' au serveur");
-			tpCanvas.repaint();
+		if (TPClient.joueur.isVivant()) {
+			if ((TPClient.joueur.getPosX() + 1) < 10) {
+				TPClient.joueur.setPosX(TPClient.joueur.getPosX() + 1);
+				System.out.println("envoie 'Droit' au serveur");
+				tpCanvas.repaint();
+			}
 		}
 
 	}
 
 	/** Action vers gauche */
 	public synchronized void gauche() {
-		if ((TPClient.joueur.getPosX() - 1) >= 0) {
-			TPClient.joueur.setPosX(TPClient.joueur.getPosX() - 1);
-			System.out.println("envoie 'Gauche' au serveur");
-			tpCanvas.repaint();
+		if (TPClient.joueur.isVivant()) {
+			if ((TPClient.joueur.getPosX() - 1) >= 0) {
+				TPClient.joueur.setPosX(TPClient.joueur.getPosX() - 1);
+				System.out.println("envoie 'Gauche' au serveur");
+				tpCanvas.repaint();
+			}
 		}
 
 	}
 
 	/** Action vers gauche */
 	public synchronized void haut() {
-		if ((TPClient.joueur.getPosY() - 1) >= 0) {
-			TPClient.joueur.setPosY(TPClient.joueur.getPosY() - 1);
-			System.out.println("envoie 'Haut' au serveur");
+		if (TPClient.joueur.isVivant()) {
+			if ((TPClient.joueur.getPosY() - 1) >= 0) {
+				TPClient.joueur.setPosY(TPClient.joueur.getPosY() - 1);
+				System.out.println("envoie 'Haut' au serveur");
 
-			tpCanvas.repaint();
+				tpCanvas.repaint();
+			}
 		}
 
 	}
 
 	/** Action vers bas */
 	public synchronized void bas() {
+		if (TPClient.joueur.isVivant()) {
+			if ((TPClient.joueur.getPosY() + 1) < 10) {
+				TPClient.joueur.setPosY(TPClient.joueur.getPosY() + 1);
+				System.out.println("envoie 'Bas' au serveur");
 
-		if ((TPClient.joueur.getPosY() + 1) < 10) {
-			TPClient.joueur.setPosY(TPClient.joueur.getPosY() + 1);
-			System.out.println("envoie 'Bas' au serveur");
-
-			tpCanvas.repaint();
+				tpCanvas.repaint();
+			}
 		}
-
 	}
 
 	/** Pour rafraichir la situation */
