@@ -19,11 +19,10 @@ import java.io.ObjectOutputStream;
  */
 public class TPClient extends Frame {
 
-	byte[] etat = new byte[2 * 10 * 10];
 	int port = 2000;
 	Socket socket = null;
-	InputStream in;
-	// Joueur monJoueur;
+
+	
 	static Joueur joueur;
 	TPPanel tpPanel;
 	TPCanvas tpCanvas;
@@ -37,13 +36,13 @@ public class TPClient extends Frame {
 		setLayout(new BorderLayout());
 		tpPanel = new TPPanel(this);
 		add("North", tpPanel);
-		tpCanvas = new TPCanvas(this.etat);
+		tpCanvas = new TPCanvas();
 		add("Center", tpCanvas);
 		// - - - -
 		TPClient.joueur = new Joueur(id, x, y, Team.getTeamById(team));
 		try {
 			this.socket = new Socket("localhost", this.port);
-			Thread threadClient = new Thread(new ThreadClient(socket));
+			Thread threadClient = new Thread(new ThreadClient(socket, tpCanvas));
 			threadClient.start();
 		} catch (IOException e) {
 			System.err.println("Pas de Serveur: "+ e.getLocalizedMessage());
@@ -96,7 +95,7 @@ public class TPClient extends Frame {
 
 	/** Pour rafraichir la situation */
 	public synchronized void refresh() {
-
+		
 		tpCanvas.repaint();
 	}
 
@@ -170,12 +169,12 @@ public class TPClient extends Frame {
 
 class ThreadClient implements Runnable {
 
-	private ArrayList<Joueur> joueurs;
-
 	private ObjectInputStream objInput;
 	private ObjectOutputStream objOutput;
+	private TPCanvas canvas;
 
-	public ThreadClient(Socket socket) {
+	public ThreadClient(Socket socket, TPCanvas canvas) {
+		this.canvas = canvas;
 		try {
 			this.objOutput = new ObjectOutputStream(socket.getOutputStream());
 			this.objInput = new ObjectInputStream(socket.getInputStream());
@@ -185,6 +184,7 @@ class ThreadClient implements Runnable {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void run() {
 		Object o = null;
@@ -192,11 +192,13 @@ class ThreadClient implements Runnable {
 			try {
 				this.objOutput.writeObject(TPClient.joueur);
 				o = objInput.readObject();
+				// Si o est une liste de joueur
 				if (o instanceof ArrayList<?>) {
-					//TODO
-					//if (((ArrayList<?>) o).get(0) instanceof Joueur) {
-					//	System.out.println("pouet le joueur");
-					//}
+					if (((ArrayList<?>) o).size() != 0 && ((ArrayList<?>) o).get(0) instanceof Joueur) {
+						System.out.println("pouet le joueur");
+						;
+						canvas.joueurs = (ArrayList<Joueur>)o;
+					}
 				}
 			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();

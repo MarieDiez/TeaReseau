@@ -2,6 +2,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 /**
  * @author Johan Guerrero & Marie Diez
@@ -11,7 +12,7 @@ public class TPCanvas extends Canvas {
 
 	int size = 650;
 	int nbPosition = 10;
-	byte[] etat;
+	ArrayList<Joueur> joueurs;
 	
 	
 	Color[] color = { Color.black, Color.blue, Color.red, Color.green, Color.yellow };
@@ -21,14 +22,13 @@ public class TPCanvas extends Canvas {
 	// 3 green (bloqué blue)
 	// 4 yellow (bloqué red);
 
-	public TPCanvas(byte[] pEtat) {
-		this.etat = pEtat;
+	public TPCanvas() {
+		this.joueurs = new ArrayList<Joueur>();
 	}
 
 	public void paint(Graphics win) {
-		System.out.println("TPCanvas : Paint");
 		paintCarte(win);
-		drawEtat(win);
+		drawJoueurs(win);
 	}
 
 	public Dimension getMinimumSize() {
@@ -51,18 +51,17 @@ public class TPCanvas extends Canvas {
 
 	}
 
-	public void drawEtat(Graphics win) {
-		for (int i = 0; i < 10 * 10; i++) {
-			if (etat[2 * i] != 0) {
+	public void drawJoueurs(Graphics win) {
+		for (Joueur j : this.joueurs) {
 				// System.out.println("Joueur "+etat[2*i]+ " X "+i%10+" Y "+i/10);
-				drawPlayer(win, i % 10, i / 10, etat[2 * i + 1]);
-			}
+				//drawJoueur(win, i % 10, i / 10, etat[2 * i + 1]);
+				drawJoueur(win, j);
 		}
 	}
 
-	public void drawPlayer(Graphics win, int x, int y, byte type) {
-		win.setColor(color[type]);
-		win.fillOval((x * size / nbPosition) + 1, (y * size / nbPosition) + 1, size / nbPosition - 1,
+	public void drawJoueur(Graphics win, Joueur joueur) {
+		win.setColor(joueur.getTeam().getCouleur());
+		win.fillOval((joueur.getPosX() * size / nbPosition) + 1, (joueur.getPosY() * size / nbPosition) + 1, size / nbPosition - 1,
 				size / nbPosition - 1);
 	}
 
