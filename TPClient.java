@@ -188,8 +188,8 @@ class ThreadClient implements Runnable {
 		boolean fini = false;
 		//initialisation joueur
 		try {
-			this.objOutput.writeObject(TPClient.joueur);
-			TPClient.joueur = (Joueur) objInput.readObject();
+			this.objOutput.writeUnshared(TPClient.joueur);
+			TPClient.joueur = (Joueur) objInput.readUnshared();
 		} catch (ClassNotFoundException | IOException e1) {
 			e1.printStackTrace();
 		}
@@ -200,12 +200,13 @@ class ThreadClient implements Runnable {
 		}
 		while (!fini) {
 			try {
-				this.objOutput.writeObject(TPClient.joueur);
-				Thread.sleep(10); //TODO ??
+				System.out.println(TPClient.joueur);
+				this.objOutput.writeUnshared(TPClient.joueur);
+				Thread.sleep(100); //TODO ??
 				canvas.joueurs = new ArrayList<Joueur>();
 				int size = objInput.readInt();
 				for (int i = 0; i < size; i++) {
-					canvas.joueurs.add((Joueur) objInput.readObject());
+					canvas.joueurs.add((Joueur) objInput.readUnshared());
 				}
 				canvas.repaint();
 				/*/ Si o est une liste de joueur

@@ -97,13 +97,16 @@ class ServeurClientThread implements Runnable {
 				// réponse au client
 				this.objOutput.writeInt(TPServeur.joueurs.size());
 				for (int i = 0; i < TPServeur.joueurs.size(); i++) {
-					this.objOutput.writeObject(TPServeur.joueurs.get(i));
+					this.objOutput.writeUnshared(TPServeur.joueurs.get(i));
 				}
 				byte keep_x = this.joueur.getPosX();
 				byte keep_y = this.joueur.getPosY();
 
 				// écoute du client
-				this.joueur.update((Joueur) this.objInput.readObject());
+				//Joueur ju = (Joueur) this.objInput.readObject();
+				Joueur ju = (Joueur) this.objInput.readUnshared();
+				System.out.println(ju);
+				this.joueur.update(ju);
 
 				// TODO test de positionnement + ajout dans l'array
 				joueurOk(this.joueur, keep_x, keep_y);
